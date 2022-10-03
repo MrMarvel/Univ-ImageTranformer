@@ -34,8 +34,7 @@ public class App extends JPanel {
         FileOp = new AddFile(img, picture);
         add(FileOp);
         //Добавление выпадающего списка расширений
-        String[] components = {"psd", "tiff", "bmp", "jpeg", "gif", "eps", "png", "pict", "pdf", "pcs", "ico", "cdr",
-                "ai", "raw", "svg", "avif"};
+        String[] components = {"png", "jpg", "gif"};
         comboBox = new JComboBox(components);
         comboBox.setBounds(670, 80, 200, 30);
         comboBox.setBackground(new Color(231, 120, 100));
@@ -104,15 +103,17 @@ class SaveFiles extends JButton implements ActionListener{
         String path = getFilePath();
         String format = getComboBox();
         //Сохраняем путь до нового файла в переменной newFileName
-        String newFileName = Converter.convert(path, format);
-        //Делай с ним все, что хочешь)
-        System.out.println(newFileName);
-        //Телеграмма из центра дошла до Штирлица не сразу. Пришлось перечитывать.
+
         JFileChooser fileChooser = new JFileChooser();
         if (fileChooser.showSaveDialog(SaveFiles.this) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            // save to file
         }
+
+        String newFileName = Converter.convert(path, format, String.valueOf(fileChooser.getSelectedFile()));
+        //Делай с ним все, что хочешь)
+        System.out.println(newFileName);
+        //Телеграмма из центра дошла до Штирлица не сразу. Пришлось перечитывать.
+
     }
 }
 
@@ -123,8 +124,7 @@ class AddFile extends JButton implements ActionListener{
     File SelFile;
     ImageIcon picture;
     JLabel img;
-    String[] components = {"psd", "tiff", "bmp", "jpg", "jpeg", "gif", "eps", "png", "pict", "pdf", "pcs", "ico", "cdr",
-            "ai", "raw", "svg", "avif"};
+    String[] components = {"png", "jpg", "gif"};
 
     AddFile(JLabel img, ImageIcon picture){
 
@@ -144,7 +144,6 @@ class AddFile extends JButton implements ActionListener{
         setBackground(new Color(166, 30, 30));
         Border emptyBorder = BorderFactory.createEmptyBorder();
         setBorder(emptyBorder);
-
 
         fc = new JFileChooser();
         setFocusPainted(false);
@@ -169,7 +168,7 @@ class AddFile extends JButton implements ActionListener{
             }
         }
 
-        if (format.toString().equals("pdf") || format.toString().equals("psd")){
+/*        if (format.toString().equals("pdf") || format.toString().equals("psd")){
             BufferedImage bimg = null;
             try {
                 bimg = ImageIO.read(new File("src/java/doc.png"));
@@ -181,14 +180,14 @@ class AddFile extends JButton implements ActionListener{
             img.setIcon(pic);
             return SelFile.getPath();
         }else {
-            //Сверка среза с шаблонами форматов
+  */
+        //Сверка среза с шаблонами форматов
             for (String str : components) {
                 if (str.equals(format.toString()) && !format.toString().equals("")) {
                     state = true;
                     break;
                 }
-            }
-        }
+            } //    }
         //Результат сверки
         if (state) {
             BufferedImage bimg = null;
@@ -268,7 +267,7 @@ class customFontColor{
 
 //Класс, который будет творить магию
 class Converter{
-    public static String convert(String path, String format) {
+    public static String convert(String path, String format, String newPath) {
         BufferedImage bufferedImage;
         try {
             //Считываем изображение в буфер
@@ -280,8 +279,6 @@ class Converter{
             newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
 
             // записываем новое изображение в формате jpg
-            String newPath = path + "." + format;
-
             ImageIO.write(newBufferedImage, format, new File(newPath));
 
             return newPath;
