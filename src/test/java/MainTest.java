@@ -12,14 +12,20 @@ class GuiMainTest {
 
     @BeforeEach
     public void setUp() {
-        app = new FrameFixture(new Main());
+        try {
+            Main main = new Main();
+            app = new FrameFixture(main);
+        } catch (Exception e) {
+            assert(false);
+        }
+        app.show();
     }
 
     @AfterEach
     public void tearDown() {
         try {
-            app.cleanUp();
             app.close();
+            app.cleanUp();
         } catch (Exception ignored) {}
     }
     @Test
