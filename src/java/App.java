@@ -9,6 +9,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Класс интерфейса страницы приложения.
+ * @author Панкрухин Максим.
+ * @version 1.0.0.
+ */
 public class App extends JPanel {
 
     ImageIcon picture = new ImageIcon(new ImageIcon("src/java/StandartImage.png").getImage().getScaledInstance(600, 400, Image.SCALE_DEFAULT));
@@ -16,6 +21,9 @@ public class App extends JPanel {
     AddFile FileOp;
     JComboBox comboBox;
 
+    /**
+     * Конструктор класса App.
+     */
     App(){
         setSize(1080,720);
         setBackground(new Color(191, 80, 60));
@@ -50,14 +58,26 @@ public class App extends JPanel {
     }
 }
 
-//Класс визуального дизайна приложения
+/**
+ * Класс создания дизайна градиента страницы.
+ * @author Панкрухин Максим.
+ * @version 1.0.0.
+*/
 class pan extends JPanel{
-    boolean state = true;
+    /**
+     * Конструктор класса Pan.
+     */
     pan(){
         setSize(1080, 220);
         setLocation(0, 500);
         setVisible(true);
     }
+
+    /**
+     * Переопределенный метод рисования градиента страницы.
+     * @param g объект класса Graphics.
+     * @see Graphics
+     */
     public void paint(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
 
@@ -68,11 +88,22 @@ class pan extends JPanel{
     }
 }
 
-//Класс стартовой кнопки и сохранения файла
+/**
+ * Класс стартовой кнопки и сохранения файла.
+ * @author Панкрухин Максим, Булдаков Никита.
+ * @version 1.0.0.
+*/
 class SaveFiles extends JButton implements ActionListener{
     AddFile FileOp;
     JComboBox comboBox;
 
+    /**
+     * Конструктор класса SaveFiles.
+     * @param FileOp объект класса File выбранного файла.
+     * @see File – класс файла.
+     * @param comboBox объект компонента класса JComboBox выбранного расширения нового файла.
+     * @see JComboBox класс выпадающего списка.
+     */
     SaveFiles(AddFile FileOp, JComboBox comboBox){
         this.FileOp = FileOp; this.comboBox = comboBox;
         setBounds(210, 470, 40, 40);
@@ -86,17 +117,26 @@ class SaveFiles extends JButton implements ActionListener{
         addActionListener(this);
     }
 
-    //Получение пути выбранного файла
+    /**
+     * Метод получения пути выбранного файла.
+     * @return возвращает значение пути выбранного изменяемого файла.
+     */
     public String getFilePath() {
         return FileOp.Select();
     }
 
-    //Получение выбранного расширения
+    /**
+     * Метод получения выбранного расширения.
+     * @return возвращает значение выбранного расширения нового файла.
+     */
     public String getComboBox() {
         return (String)comboBox.getSelectedItem();
     }
 
-    //Обработчик нажатия кнопки старта
+    /**
+     * Метод обработки нажатия кнопки старта.
+     * @see SaveFiles#SaveFiles(AddFile, JComboBox)
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         //Вычленяем путь и новый формат (для удобства)
@@ -117,7 +157,11 @@ class SaveFiles extends JButton implements ActionListener{
     }
 }
 
-//Класс выбора файла из каталога
+/**
+ * Класс выбора файла из каталога.
+ * @author Панкрухин Максим.
+ * @version 1.0.0.
+ */
 class AddFile extends JButton implements ActionListener{
 
     JFileChooser fc;
@@ -126,6 +170,13 @@ class AddFile extends JButton implements ActionListener{
     JLabel img;
     String[] components = {"png", "jpg", "gif"};
 
+    /**
+     * Конструктор класса AddFile.
+     * @param img объект класса JLabel. Используется для предпросмотра выбранного изображения или изображения по умолчанию.
+     * @see JLabel
+     * @param picture объект класса ImageIcon. Содержит картинку по умолчанию.
+     * @see ImageIcon
+     */
     AddFile(JLabel img, ImageIcon picture){
 
         this.img = img;
@@ -150,7 +201,11 @@ class AddFile extends JButton implements ActionListener{
         addActionListener(this);
     }
 
-    //Метод, который возвращает путь к выбранному файлу
+    /**
+     * Метод обработки пути выбранного файла.
+     * @return возвращает путь выбранного файла или сообщение об ошибке.
+     */
+
     String Select(){
         SelFile = fc.getSelectedFile();
         boolean state = true; StringBuilder format = new StringBuilder();
@@ -209,7 +264,12 @@ class AddFile extends JButton implements ActionListener{
         }
     }
 
-    //Подбор значений размера изображения
+    /**
+     * Метод подбора значений размера изображения на предпросмотре.
+     * @param x размер выбранного изображения по оси X.
+     * @param y размер выбранного изображения по оси Y.
+     * @return возвращает массив чисел целочисленного типа, содержащий измененный размер изображения по осям X и Y соответственно.
+     */
     Integer[] sizeImg(int x, int y){
         Integer[] size = new Integer[2];
         double prop, y1=y, x1=x;
@@ -229,7 +289,12 @@ class AddFile extends JButton implements ActionListener{
         return size;
     }
 
-    //Метод выбора файла из файловой локальной системы
+    /**
+     * Метод отображения выбора файла из файловой локальной системы.
+     * @param e объект класса ActionEvent.
+     * @see ActionListener#actionPerformed(ActionEvent)
+     * @see ActionEvent
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -243,7 +308,11 @@ class AddFile extends JButton implements ActionListener{
     }
 }
 
-//Класс пользовательских шрифтов
+/**
+ * Класс хранения и подключения пользовательских шрифтов.
+ * @author Панкрухин Максим.
+ * @version 1.0.0.
+ */
 class customFontColor{
     Font FiraSans_Black, FiraSans_BlackItalic,
             FiraSans_Bold, FiraSans_BoldItalic,
@@ -265,8 +334,19 @@ class customFontColor{
     }
 }
 
-//Класс, который будет творить магию
+/**
+ * Класс конвертации изображения в другое расширение и сохранение нового файла по выбранному пути в локальной файловой системе.
+ * @author Булдаков Никита, Панкрухин Максим.
+ * @version 1.1.0.
+ */
 class Converter{
+    /**
+     * Метод конвертации и сохранения изображения.
+     * @param path путь выбранного изменяемого файла.
+     * @param format выбранное расширение нового файла изображения.
+     * @param newPath путь сохраняемого изображения.
+     * @return возвращает путь сохраненного изображения.
+     */
     public static String convert(String path, String format, String newPath) {
         BufferedImage bufferedImage;
         try {
