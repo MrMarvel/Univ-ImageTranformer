@@ -5,12 +5,13 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "test" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "test" ]
+    branches: [ "dev" ]
 
 jobs:
   build:
+    name: Build and test app
 
     runs-on: ubuntu-latest
 
