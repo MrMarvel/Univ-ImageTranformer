@@ -12,21 +12,12 @@ class GuiMainTest {
 
     @BeforeEach
     public void setUp() {
-        try {
-            Main main = new Main();
-            app = new FrameFixture(main);
-        } catch (Exception e) {
-            assert(false);
-        }
-        app.show();
+        app = new FrameFixture(new Main());
     }
 
     @AfterEach
     public void tearDown() {
-        try {
-            app.close();
-            app.cleanUp();
-        } catch (Exception ignored) {}
+        app.cleanUp();
     }
     @Test
     void testStartUp() throws InterruptedException {
