@@ -17,7 +17,10 @@ class GuiMainTest {
 
     @AfterEach
     public void tearDown() {
-        app.cleanUp();
+        try {
+            app.cleanUp();
+            app.close();
+        } catch (Exception ignored) {}
     }
     @Test
     void testStartUp() throws InterruptedException {
