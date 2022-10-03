@@ -1,20 +1,17 @@
-import org.ghost4j.document.PDFDocument;
-import org.ghost4j.renderer.SimpleRenderer;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.beans.Customizer;
 import java.io.File;
 import java.io.IOException;
 
 public class App extends JPanel {
 
-    ImageIcon picture = new ImageIcon(new ImageIcon("src/StandartImage.png").getImage().getScaledInstance(600, 400, Image.SCALE_DEFAULT));
+    ImageIcon picture = new ImageIcon(new ImageIcon("src/java/StandartImage.png").getImage().getScaledInstance(600, 400, Image.SCALE_DEFAULT));
     JLabel img;
     AddFile FileOp;
     JComboBox comboBox;
@@ -22,39 +19,20 @@ public class App extends JPanel {
     App(){
         setSize(1080,720);
         setBackground(new Color(191, 80, 60));
-        View();
-
-        FileOp = new AddFile(img, picture);
-        add(FileOp);
-        add(new pan());
-        setLayout(null);
-        setVisible(true);
-    }
-
-    //Получение пути выбранного файла
-    public String getFilePath() {
-        return FileOp.Select();
-    }
-
-    //Получение выбранного расширения
-    public String getComboBox() {
-        return (String)comboBox.getSelectedItem();
-    }
-
-    //Основной функциональный дизайн и вид страницы приложения
-    void View(){
         //Добавление картинки по-умолчанию
         img = new JLabel(picture);
         img.setBackground(Color.gray);
         img.setBounds(50, 50, 600, 400);
         add(img);
-
         JLabel addFormat = new JLabel("Выберите расширение файла");
         addFormat.setBounds(670, 50, 300, 30);
         customFontColor fontsLib = new customFontColor();
         addFormat.setFont(fontsLib.FiraSans_Bold);
         add(addFormat);
 
+        //Добавление функционала выбора файла
+        FileOp = new AddFile(img, picture);
+        add(FileOp);
         //Добавление выпадающего списка расширений
         String[] components = {"psd", "tiff", "bmp", "jpeg", "gif", "eps", "png", "pict", "pdf", "pcs", "ico", "cdr",
                 "ai", "raw", "svg", "avif"};
@@ -62,8 +40,15 @@ public class App extends JPanel {
         comboBox.setBounds(670, 80, 200, 30);
         comboBox.setBackground(new Color(231, 120, 100));
         add(comboBox);
-    }
+        //Добавление функционала кнопки старта
+        add(new SaveFiles(FileOp, comboBox));
 
+        //Добавление градиента
+        add(new pan());
+
+        setLayout(null);
+        setVisible(true);
+    }
 }
 
 //Класс визуального дизайна приложения
@@ -84,7 +69,52 @@ class pan extends JPanel{
     }
 }
 
+//Класс стартовой кнопки и сохранения файла
+class SaveFiles extends JButton implements ActionListener{
+    AddFile FileOp;
+    JComboBox comboBox;
 
+    SaveFiles(AddFile FileOp, JComboBox comboBox){
+        this.FileOp = FileOp; this.comboBox = comboBox;
+        setBounds(210, 470, 40, 40);
+        setOpaque(true);
+        setBackground(new Color(166, 30, 30));
+        setFocusPainted(false);
+        Border emptyBorder = BorderFactory.createEmptyBorder();
+        setBorder(emptyBorder);
+        setIcon(new ImageIcon(new ImageIcon("src/java/Start.png").getImage().getScaledInstance(20, 25, Image.SCALE_DEFAULT)));
+
+        addActionListener(this);
+    }
+
+    //Получение пути выбранного файла
+    public String getFilePath() {
+        return FileOp.Select();
+    }
+
+    //Получение выбранного расширения
+    public String getComboBox() {
+        return (String)comboBox.getSelectedItem();
+    }
+
+    //Обработчик нажатия кнопки старта
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        //Вычленяем путь и новый формат (для удобства)
+        String path = getFilePath();
+        String format = getComboBox();
+        //Сохраняем путь до нового файла в переменной newFileName
+        String newFileName = Converter.convert(path, format);
+        //Делай с ним все, что хочешь)
+        System.out.println(newFileName);
+        //Телеграмма из центра дошла до Штирлица не сразу. Пришлось перечитывать.
+        JFileChooser fileChooser = new JFileChooser();
+        if (fileChooser.showSaveDialog(SaveFiles.this) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            // save to file
+        }
+    }
+}
 
 //Класс выбора файла из каталога
 class AddFile extends JButton implements ActionListener{
@@ -104,14 +134,17 @@ class AddFile extends JButton implements ActionListener{
         customFontColor fontsLib = new customFontColor();
 
         setSize(150, 40);
-        setLocation(275, 470);
+        setLocation(50, 470);
         setText("Выберите файл");
 
         setFont(fontsLib.FiraSans_Bold);
         setForeground(new Color(240, 240, 240));
         setOpaque(true);
-        setHorizontalAlignment(SwingConstants.LEFT);
+        setHorizontalAlignment(SwingConstants.CENTER);
         setBackground(new Color(166, 30, 30));
+        Border emptyBorder = BorderFactory.createEmptyBorder();
+        setBorder(emptyBorder);
+
 
         fc = new JFileChooser();
         setFocusPainted(false);
@@ -139,12 +172,12 @@ class AddFile extends JButton implements ActionListener{
         if (format.toString().equals("pdf") || format.toString().equals("psd")){
             BufferedImage bimg = null;
             try {
-                bimg = ImageIO.read(new File("src/doc.png"));
+                bimg = ImageIO.read(new File("src/java/doc.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
             Integer[] picSize = sizeImg(bimg.getWidth(), bimg.getHeight());
-            ImageIcon pic = new ImageIcon(new ImageIcon("src/doc.png").getImage().getScaledInstance(picSize[0], picSize[1], Image.SCALE_DEFAULT));
+            ImageIcon pic = new ImageIcon(new ImageIcon("src/java/doc.png").getImage().getScaledInstance(picSize[0], picSize[1], Image.SCALE_DEFAULT));
             img.setIcon(pic);
             return SelFile.getPath();
         }else {
@@ -202,7 +235,12 @@ class AddFile extends JButton implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int result = fc.showOpenDialog(AddFile.this);
-        Select();
+        try {
+            Select();
+        } catch (NullPointerException Exception){
+            System.err.println("Не выбран файл");
+        }
+
     }
 }
 
@@ -217,7 +255,7 @@ class customFontColor{
             FiraSans_Thin, FiraSans_ThinItalic;
     customFontColor(){
         try {
-            FiraSans_Bold = Font.createFont(Font.TRUETYPE_FONT, new File("src/Fonts/FiraSans-Bold.ttf")).deriveFont(15f);
+            FiraSans_Bold = Font.createFont(Font.TRUETYPE_FONT, new File("src/java/Fonts/FiraSans-Bold.ttf")).deriveFont(15f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(FiraSans_Bold);
         } catch (IOException e) {
@@ -225,5 +263,32 @@ class customFontColor{
         } catch(FontFormatException e) {
             e.printStackTrace();
         }
+    }
+}
+
+//Класс, который будет творить магию
+class Converter{
+    public static String convert(String path, String format) {
+        BufferedImage bufferedImage;
+        try {
+            //Считываем изображение в буфер
+            bufferedImage = ImageIO.read(new File(path));
+
+            // создаем пустое изображение RGB, с тай же шириной высотой и белым фоном
+            BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(),
+                    bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+            newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
+
+            // записываем новое изображение в формате jpg
+            String newPath = path + "." + format;
+
+            ImageIO.write(newBufferedImage, format, new File(newPath));
+
+            return newPath;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
