@@ -6,7 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
+// Убрал используемый импорт
+//import java.io.File;
 import java.io.IOException;
 
 /**
@@ -209,7 +210,7 @@ class AddFile extends JButton implements ActionListener{
     String Select(){
         SelFile = fc.getSelectedFile();
         boolean state = true; StringBuilder format = new StringBuilder();
-        String Path = SelFile.getPath();
+        String Path = null; // За-null-ил используемую переменную
 
         //Проверка формата файла
         //Срез строки пути файла до расширения
@@ -271,7 +272,7 @@ class AddFile extends JButton implements ActionListener{
      * @return возвращает массив чисел целочисленного типа, содержащий измененный размер изображения по осям X и Y соответственно.
      */
     Integer[] sizeImg(int x, int y){
-        Integer[] size = new Integer[2];
+        Integer[] size = new Integer[1]; // Указал уменьшенный массив (1) вместо (2).
         double prop, y1=y, x1=x;
         if (x>y){
             prop = (double) y/(double)x;
